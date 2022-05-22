@@ -36,7 +36,14 @@ namespace ariel {
             this->p_root = other.p_root;
             other.p_root = nullptr;
         }
-
+        OrgChart &operator=(OrgChart<T> other){
+            this->root=other.root;
+            other.root= nullptr;
+        }
+        OrgChart &operator=(OrgChart<T> &&other)noexcept{
+            this->root=other.root;
+            other.root= nullptr;
+        }
         /**
          * Base function to add/change root of organizational tree
          * @param root_data -> receive the data to input in the tree
@@ -96,7 +103,12 @@ namespace ariel {
 
         static ostream &PrintTree(ostream &output, Node *p_node, string move, bool last) {
             output << move + "@= " + p_node->data +"\n";
-            move += last ? "   " : "|  ";
+            if(last){
+                move+="   ";
+            }
+            else{
+                move+= "|  ";
+            }
             for (size_t i = 0; i < p_node->sons.size(); i++) {
                 PrintTree(output, p_node->sons[i], move, i == p_node->sons.size() - 1);
             }
@@ -108,6 +120,9 @@ namespace ariel {
         ~OrgChart() {
             stack<Node *> pre_stack;
             stack<Node *> pre_que;
+            if (p_root== nullptr){
+                return;
+            }
             pre_stack.push(p_root);
             while (!pre_stack.empty()) {
                 Node *temp = pre_stack.top();
@@ -194,9 +209,6 @@ namespace ariel {
                         }
                     }
                 }
-                else{
-                    throw invalid_argument("chart is empty!");
-                }
             }
 
             T &operator*() const {
@@ -250,36 +262,60 @@ namespace ariel {
         };
 
         iterator begin_level_order() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{p_root, 0});
         }
 
         iterator end_level_order() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{nullptr, 0});
         }
 
         iterator begin_reverse_order() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{p_root, 1});
         }
 
         iterator reverse_order() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             //not sure about this because we need to stop when we reach root
             return (iterator{nullptr, 1});
         }
 
         iterator begin_preorder() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{p_root, 2});
         }
 
         iterator end_preorder() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{nullptr, 2});
         }
 
         //for the for each loop. Should work like level order
         iterator begin() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{p_root, 0});
         }
 
         iterator end() {
+            if (p_root== nullptr){
+                throw invalid_argument("chart is empty");
+            }
             return (iterator{nullptr, 0});
         }
     };
