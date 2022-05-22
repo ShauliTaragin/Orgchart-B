@@ -194,6 +194,9 @@ namespace ariel {
                         }
                     }
                 }
+                else{
+                    throw invalid_argument("chart is empty!");
+                }
             }
 
             T &operator*() const {
