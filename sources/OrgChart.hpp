@@ -27,9 +27,31 @@ namespace ariel {
         OrgChart() {
             p_root = nullptr;
         };
-
+        /**
+         * Deep copying from another organizational chart
+         * @param other OrgChart
+         */
         OrgChart(OrgChart<T> &other) {
-            this->p_root = other.p_root;
+            this->p_root = new Node(other.p_root->data);
+            Node * temp  = other.p_root;
+            Node * temp_4_r_tree = p_root;
+            stack<Node *> traversing_stk;
+            stack<Node *> traversing_stk_4_r_tree;
+            traversing_stk.push(temp);
+            traversing_stk_4_r_tree.push(temp_4_r_tree);
+            while (!traversing_stk.empty()) {
+                //add all temps sons
+                for (auto &son: temp->sons) {
+                    traversing_stk.push(son);
+                    Node * boy = new Node(son->data);
+                    temp_4_r_tree->sons.push_back(boy);
+                    traversing_stk_4_r_tree.push(boy);
+                }
+                temp = traversing_stk.top();
+                traversing_stk.pop();
+                temp_4_r_tree = traversing_stk_4_r_tree.top();
+                traversing_stk_4_r_tree.pop();
+            }
         }
 
         OrgChart(OrgChart<T> &&other) noexcept {
